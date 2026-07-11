@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Tarar Menswear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="announce-bar">Free Delivery On Orders Above Rs. 3,000 — Nationwide Shipping</div>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">TARAR<span>Menswear</span></a>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="cart.html">Cart</a>
+    </nav>
+    <div class="header-icons">
+      <a href="account.html" class="icon-btn">&#128100;</a>
+      <a href="cart.html" class="icon-btn">&#128722;<span class="badge">2</span></a>
+      <button class="menu-toggle">&#9776;</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-banner">
+  <p class="eyebrow">Almost There</p>
+  <h1>Checkout</h1>
+  <div class="breadcrumb"><a href="index.html">Home</a> / <a href="cart.html">Cart</a> / Checkout</div>
+</div>
+
+<section class="section" style="padding-top:56px;">
+  <div class="container">
+    <form class="checkout-layout" data-demo-form>
+
+      <div class="checkout-form">
+        <h3 style="margin-bottom:22px;">Customer Details</h3>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" placeholder="e.g. Ahmed Khan" required>
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" placeholder="03XX-XXXXXXX" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Complete Address</label>
+          <textarea rows="3" placeholder="House #, Street, Area" required></textarea>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" placeholder="e.g. Lahore" required>
+          </div>
+          <div class="form-group">
+            <label>Province</label>
+            <select required>
+              <option value="">Select Province</option>
+              <option>Punjab</option>
+              <option>Sindh</option>
+              <option>Khyber Pakhtunkhwa</option>
+              <option>Balochistan</option>
+              <option>Gilgit-Baltistan</option>
+              <option>Azad Kashmir</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="margin:32px 0 18px;">Payment Method</h3>
+        <div class="pay-option active">
+          <input type="radio" name="pay" checked> <div><strong>Cash on Delivery (COD)</strong><div style="font-size:0.78rem; color:#8a8074;">Pay when your order arrives</div></div>
+        </div>
+        <div class="pay-option">
+          <input type="radio" name="pay"> <div><strong>Bank Transfer</strong><div style="font-size:0.78rem; color:#8a8074;">Direct transfer to our account</div></div>
+        </div>
+        <div class="pay-option">
+          <input type="radio" name="pay"> <div><strong>Online Payment</strong><div style="font-size:0.78rem; color:#8a8074;">Debit / Credit Card via secure gateway</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="order-summary-box">
+          <h4 style="margin-bottom:20px;">Order Summary</h4>
+          <div class="order-item"><span>Charcoal Slim-Fit Blazer × 1</span><span>Rs. 8,500</span></div>
+          <div class="order-item"><span>Wood Brown Kurta Shalwar × 2</span><span>Rs. 6,400</span></div>
+          <div class="summary-row" style="margin-top:14px;"><span>Subtotal</span><span>Rs. 14,900</span></div>
+          <div class="summary-row"><span>Shipping</span><span>Rs. 250</span></div>
+          <div class="summary-row total"><span>Total</span><span>Rs. 15,150</span></div>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px;">Place Order</button>
+          <p style="font-size:0.75rem; color:#8a8074; text-align:center; margin-top:14px;">By placing your order you agree to our Terms &amp; Conditions.</p>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:26px;">&copy; 2026 Tarar Menswear. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<a href="https://wa.me/923400026136" target="_blank" class="wa-float">&#128172;</a>
+<script src="js/script.js"></script>
+</body>
+</html>

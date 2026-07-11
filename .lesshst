@@ -1,0 +1,7 @@
+.less-history-file:
+.search
+"pkg uninstall -y $(pkg list-installed | cut -d'/' -f1 | tail -n +2)
+" -iname "foodapp" -type d 2>/dev/null
+"d  -iname "foodapp" -type d 2>/dev/null
+.search
+.mark

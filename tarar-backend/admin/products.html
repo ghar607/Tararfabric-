@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — Tarar Admin</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="brand">TARAR<span>Admin Panel</span></div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="products.html" class="active">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="orders.html">Orders</a>
+    <a href="settings.html">Settings</a>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h2>Products</h2>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="openAddModal()">+ Add Product</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Featured</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="products-body"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Add Product</h3>
+    <form id="product-form">
+      <input type="hidden" id="edit-id">
+      <div class="form-row-2">
+        <div class="form-group"><label>Product Name</label><input type="text" id="f-name" required></div>
+        <div class="form-group"><label>Category</label><select id="f-category" required></select></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label>Price (Rs.)</label><input type="number" id="f-price" required></div>
+        <div class="form-group"><label>Discount Price (Rs., optional)</label><input type="number" id="f-discount"></div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group"><label>Stock Quantity</label><input type="number" id="f-stock" required></div>
+        <div class="form-group"><label>Featured Product</label>
+          <select id="f-featured"><option value="false">No</option><option value="true">Yes</option></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Available Sizes</label>
+        <div class="check-row" id="size-check-row">
+          <label><input type="checkbox" value="S"> S</label>
+          <label><input type="checkbox" value="M"> M</label>
+          <label><input type="checkbox" value="L"> L</label>
+          <label><input type="checkbox" value="XL"> XL</label>
+          <label><input type="checkbox" value="XXL"> XXL</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Available Colors</label>
+        <div class="color-row" id="color-row">
+          <span style="background:#171310;" data-color="#171310" title="Black"></span>
+          <span style="background:#6B4423;" data-color="#6B4423" title="Wood Brown"></span>
+          <span style="background:#3E2A1B;" data-color="#3E2A1B" title="Dark Brown"></span>
+          <span style="background:#C6A15B;" data-color="#C6A15B" title="Gold"></span>
+          <span style="background:#FBF7F0; border:1px solid #ddd;" data-color="#FBF7F0" title="White"></span>
+          <span style="background:#2C3E6B;" data-color="#2C3E6B" title="Navy"></span>
+        </div>
+      </div>
+
+      <div class="form-group"><label>Description</label><textarea id="f-desc" rows="3"></textarea></div>
+      <div class="form-group"><label>Fabric Details</label><textarea id="f-fabric" rows="2"></textarea></div>
+
+      <div class="form-group">
+        <label>Product Images (up to 6)</label>
+        <input type="file" id="f-images" multiple accept="image/*">
+        <div class="img-preview-row" id="existing-images"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+requireLogin();
+let categories = [];
+let currentProducts = [];
+let keepImages = [];
+
+async function loadCategories() {
+  categories = await apiGet('/categories') || [];
+  document.getElementById('f-category').innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+}
+
+async function loadProducts() {
+  currentProducts = await apiGet('/products') || [];
+  const body = document.getElementById('products-body');
+  if (!currentProducts.length) {
+    body.innerHTML = '<tr><td colspan="7" class="empty">No products yet. Add your first product.</td></tr>';
+    return;
+  }
+  body.innerHTML = currentProducts.map(p => `
+    <tr>
+      <td>${p.name}</td>
+      <td>${p.category}</td>
+      <td>${p.discountPrice ? `<s style="color:#a39a8f;">${fmtMoney(p.price)}</s> ${fmtMoney(p.discountPrice)}` : fmtMoney(p.price)}</td>
+      <td>${p.stock}</td>
+      <td><span class="badge ${p.status}">${p.status === 'in_stock' ? 'In Stock' : 'Out of Stock'}</span></td>
+      <td>${p.featured ? '⭐' : '—'}</td>
+      <td class="action-row">
+        <button class="btn btn-sm" onclick="openEditModal('${p.id}')">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openAddModal() {
+  document.getElementById('modal-title').textContent = 'Add Product';
+  document.getElementById('product-form').reset();
+  document.getElementById('edit-id').value = '';
+  document.getElementById('existing-images').innerHTML = '';
+  keepImages = [];
+  document.querySelectorAll('#size-check-row input').forEach(cb => cb.checked = false);
+  document.querySelectorAll('#color-row span').forEach(s => s.classList.remove('active'));
+  document.getElementById('modal').classList.add('show');
+}
+
+function openEditModal(id) {
+  const p = currentProducts.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('modal-title').textContent = 'Edit Product';
+  document.getElementById('edit-id').value = p.id;
+  document.getElementById('f-name').value = p.name;
+  document.getElementById('f-category').value = p.category;
+  document.getElementById('f-price').value = p.price;
+  document.getElementById('f-discount').value = p.discountPrice || '';
+  document.getElementById('f-stock').value = p.stock;
+  document.getElementById('f-featured').value = p.featured ? 'true' : 'false';
+  document.getElementById('f-desc').value = p.description || '';
+  document.getElementById('f-fabric').value = p.fabric || '';
+
+  document.querySelectorAll('#size-check-row input').forEach(cb => cb.checked = p.sizes.includes(cb.value));
+  document.querySelectorAll('#color-row span').forEach(s => {
+    s.classList.toggle('active', p.colors.includes(s.dataset.color));
+  });
+
+  keepImages = p.images || [];
+  renderExistingImages();
+
+  document.getElementById('modal').classList.add('show');
+}
+
+function renderExistingImages() {
+  const wrap = document.getElementById('existing-images');
+  wrap.innerHTML = keepImages.map((img, i) => `
+    <div><img src="${img}"><span class="rm" onclick="removeExistingImage(${i})">×</span></div>
+  `).join('');
+}
+function removeExistingImage(i) {
+  keepImages.splice(i, 1);
+  renderExistingImages();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+document.getElementById('color-row').addEventListener('click', e => {
+  if (e.target.tagName === 'SPAN') e.target.classList.toggle('active');
+});
+
+document.getElementById('product-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('edit-id').value;
+  const sizes = Array.from(document.querySelectorAll('#size-check-row input:checked')).map(cb => cb.value);
+  const colors = Array.from(document.querySelectorAll('#color-row span.active')).map(s => s.dataset.color);
+
+  const fd = new FormData();
+  fd.append('name', document.getElementById('f-name').value);
+  fd.append('category', document.getElementById('f-category').value);
+  fd.append('price', document.getElementById('f-price').value);
+  fd.append('discountPrice', document.getElementById('f-discount').value || 0);
+  fd.append('stock', document.getElementById('f-stock').value);
+  fd.append('featured', document.getElementById('f-featured').value);
+  fd.append('description', document.getElementById('f-desc').value);
+  fd.append('fabric', document.getElementById('f-fabric').value);
+  fd.append('sizes', JSON.stringify(sizes));
+  fd.append('colors', JSON.stringify(colors));
+  if (id) fd.append('keepImages', JSON.stringify(keepImages));
+
+  const files = document.getElementById('f-images').files;
+  for (let i = 0; i < files.length; i++) fd.append('images', files[i]);
+
+  const result = id
+    ? await apiForm('/admin/products/' + id, 'PUT', fd)
+    : await apiForm('/admin/products', 'POST', fd);
+
+  if (result && result.id) {
+    showToast(id ? 'Product updated' : 'Product added');
+    closeModal();
+    loadProducts();
+  } else {
+    showToast(result?.error || 'Something went wrong');
+  }
+});
+
+async function deleteProduct(id) {
+  if (!confirm('Delete this product? This cannot be undone.')) return;
+  await apiJSON('/admin/products/' + id, 'DELETE');
+  showToast('Product deleted');
+  loadProducts();
+}
+
+(async function init() {
+  await loadCategories();
+  await loadProducts();
+})();
+</script>
+</body>
+</html>

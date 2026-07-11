@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders — Tarar Admin</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="brand">TARAR<span>Admin Panel</span></div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="orders.html" class="active">Orders</a>
+    <a href="settings.html">Settings</a>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h2>Orders</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Total</th>
+            <th>Payment Method</th>
+            <th>Transaction ID</th>
+            <th>Payment Verified</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+requireLogin();
+let orders = [];
+
+async function loadOrders() {
+  orders = await apiGet('/admin/orders') || [];
+  const body = document.getElementById('orders-body');
+  if (!orders.length) {
+    body.innerHTML = '<tr><td colspan="8" class="empty">No orders yet</td></tr>';
+    return;
+  }
+  body.innerHTML = orders.map(o => renderRow(o)).join('');
+}
+
+function renderRow(o) {
+  const tickHTML = o.paymentMethod === 'COD'
+    ? '<span style="color:#a39a8f; font-size:0.8rem;">N/A (COD)</span>'
+    : `<span class="tick ${o.paymentVerified === true ? 'yes' : 'no'}" onclick="toggleVerify('${o.id}', ${o.paymentVerified !== true})" title="Click to toggle">
+        ${o.paymentVerified === true ? '✅ Verified' : '❌ Unverified'}
+       </span>`;
+
+  return `
+    <tr>
+      <td><strong>#${o.id}</strong></td>
+      <td>${o.customer.name}<br><span style="font-size:0.75rem; color:#8a8074;">${o.customer.phone}</span></td>
+      <td>${fmtMoney(o.total)}</td>
+      <td>${o.paymentMethod}</td>
+      <td>
+        ${o.paymentMethod === 'COD'
+          ? '—'
+          : `<input type="text" class="txn-input" value="${o.transactionId || ''}" onchange="updateTxn('${o.id}', this.value)" placeholder="Enter TXN ID">`
+        }
+      </td>
+      <td>${tickHTML}</td>
+      <td>
+        <select onchange="updateStatus('${o.id}', this.value)">
+          ${['pending','accepted','dispatched','delivered','cancelled'].map(s =>
+            `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td style="font-size:0.78rem;">${fmtDate(o.createdAt)}</td>
+    </tr>
+  `;
+}
+
+async function updateStatus(id, status) {
+  await apiJSON('/admin/orders/' + id, 'PUT', { status });
+  showToast('Order status updated');
+}
+
+async function updateTxn(id, transactionId) {
+  await apiJSON('/admin/orders/' + id, 'PUT', { transactionId });
+  showToast('Transaction ID saved');
+}
+
+async function toggleVerify(id, newValue) {
+  await apiJSON('/admin/orders/' + id, 'PUT', { paymentVerified: newValue });
+  showToast(newValue ? 'Payment marked verified ✅' : 'Payment marked unverified ❌');
+  loadOrders();
+}
+
+loadOrders();
+</script>
+</body>
+</html>

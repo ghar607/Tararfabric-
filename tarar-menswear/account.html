@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Tarar Menswear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="announce-bar">Free Delivery On Orders Above Rs. 3,000 — Nationwide Shipping</div>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">TARAR<span>Menswear</span></a>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact Us</a>
+    </nav>
+    <div class="header-icons">
+      <a href="cart.html" class="icon-btn">&#128722;<span class="badge">2</span></a>
+      <button class="menu-toggle">&#9776;</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-banner">
+  <p class="eyebrow">Welcome Back</p>
+  <h1>My Account</h1>
+  <div class="breadcrumb"><a href="index.html">Home</a> / Account</div>
+</div>
+
+<!-- LOGIN / REGISTER (shown for guests) -->
+<section class="section" id="auth-section">
+  <div class="container">
+    <div class="auth-box">
+      <h2>Login</h2>
+      <p class="sub">Access your orders, wishlist &amp; saved addresses</p>
+      <form data-demo-form>
+        <div class="form-group">
+          <label>Email or Mobile Number</label>
+          <input type="text" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </form>
+      <p class="auth-switch">Don't have an account? <a href="#" onclick="document.getElementById('login-box').style.display='none'; document.getElementById('register-box').style.display='block'; return false;">Register here</a></p>
+    </div>
+
+    <div class="auth-box" style="display:none; margin-top:24px;" id="register-box">
+      <h2>Create Account</h2>
+      <p class="sub">Join Tarar Menswear for faster checkout</p>
+      <form data-demo-form>
+        <div class="form-group"><label>Full Name</label><input type="text" required></div>
+        <div class="form-group"><label>Mobile Number</label><input type="tel" required></div>
+        <div class="form-group"><label>Email Address</label><input type="email" required></div>
+        <div class="form-group"><label>Password</label><input type="password" required></div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD (demo — would show after login) -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="stitch-divider" style="margin-bottom:40px;"><span>&#10022;</span></div>
+    <p class="eyebrow text-center" style="display:block; text-align:center; margin-bottom:8px;">Preview</p>
+    <h2 class="text-center" style="margin-bottom:40px;">Customer Dashboard (After Login)</h2>
+
+    <div class="account-layout">
+      <aside class="account-side">
+        <a href="#" class="active">Dashboard</a>
+        <a href="#">My Orders</a>
+        <a href="#">Order Tracking</a>
+        <a href="#">Wishlist</a>
+        <a href="#">Saved Address</a>
+        <a href="#">Profile Settings</a>
+        <a href="#">Change Password</a>
+        <a href="index.html">Logout</a>
+      </aside>
+
+      <div>
+        <div class="stat-cards">
+          <div class="stat-card"><span>Total Orders</span><h3>12</h3></div>
+          <div class="stat-card"><span>Pending Orders</span><h3>1</h3></div>
+          <div class="stat-card"><span>Wishlist Items</span><h3>3</h3></div>
+        </div>
+
+        <table class="cart-table">
+          <thead><tr><th>Order ID</th><th>Date</th><th>Status</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>#TRR-1042</td><td>05 Jul 2026</td><td>Dispatched</td><td>Rs. 8,500</td></tr>
+            <tr><td>#TRR-1031</td><td>22 Jun 2026</td><td>Delivered</td><td>Rs. 4,200</td></tr>
+            <tr><td>#TRR-1018</td><td>10 Jun 2026</td><td>Delivered</td><td>Rs. 12,900</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:26px;">&copy; 2026 Tarar Menswear. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<a href="https://wa.me/923400026136" target="_blank" class="wa-float">&#128172;</a>
+<script src="js/script.js"></script>
+</body>
+</html>

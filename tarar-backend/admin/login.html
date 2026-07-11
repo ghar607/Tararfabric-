@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — Tarar Menswear</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-box">
+    <h1>Tarar Menswear</h1>
+    <p>Admin Panel Login</p>
+    <div class="error-msg" id="err"></div>
+    <input type="text" id="username" placeholder="Username" value="admin">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="doLogin()">Login</button>
+    <div class="hint">Default: admin / tarar123</div>
+  </div>
+</div>
+<script src="js/admin.js"></script>
+<script>
+if (getToken()) window.location.href = '/admin/dashboard.html';
+
+async function doLogin() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const errBox = document.getElementById('err');
+  errBox.style.display = 'none';
+  try {
+    const res = await fetch(API + '/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem('tarar_admin_token', data.token);
+      window.location.href = '/admin/dashboard.html';
+    } else {
+      errBox.textContent = data.error || 'Login failed';
+      errBox.style.display = 'block';
+    }
+  } catch (e) {
+    errBox.textContent = 'Server se connect nahi ho saka. Backend chal raha hai?';
+    errBox.style.display = 'block';
+  }
+}
+document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categories — Tarar Admin</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="brand">TARAR<span>Admin Panel</span></div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html" class="active">Categories</a>
+    <a href="orders.html">Orders</a>
+    <a href="settings.html">Settings</a>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h2>Categories</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="modal-box" style="margin-bottom:24px; max-width:400px; padding:20px;">
+      <div class="form-group" style="display:flex; gap:10px; margin:0;">
+        <input type="text" id="new-cat-name" placeholder="New category name">
+        <button class="btn btn-primary" onclick="addCategory()">Add</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Category Name</th><th>Actions</th></tr></thead>
+        <tbody id="cat-body"><tr><td colspan="2" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+requireLogin();
+let categories = [];
+
+async function loadCategories() {
+  categories = await apiGet('/categories') || [];
+  const body = document.getElementById('cat-body');
+  if (!categories.length) {
+    body.innerHTML = '<tr><td colspan="2" class="empty">No categories yet</td></tr>';
+    return;
+  }
+  body.innerHTML = categories.map(c => `
+    <tr>
+      <td><span id="cat-name-${c.id}">${c.name}</span></td>
+      <td class="action-row">
+        <button class="btn btn-sm" onclick="renameCategory('${c.id}')">Rename</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteCategory('${c.id}')">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function addCategory() {
+  const input = document.getElementById('new-cat-name');
+  const name = input.value.trim();
+  if (!name) return;
+  await apiJSON('/admin/categories', 'POST', { name });
+  input.value = '';
+  showToast('Category added');
+  loadCategories();
+}
+
+async function renameCategory(id) {
+  const current = categories.find(c => c.id === id);
+  const name = prompt('New category name:', current?.name || '');
+  if (!name) return;
+  await apiJSON('/admin/categories/' + id, 'PUT', { name });
+  showToast('Category updated');
+  loadCategories();
+}
+
+async function deleteCategory(id) {
+  if (!confirm('Delete this category?')) return;
+  await apiJSON('/admin/categories/' + id, 'DELETE');
+  showToast('Category deleted');
+  loadCategories();
+}
+
+loadCategories();
+</script>
+</body>
+</html>

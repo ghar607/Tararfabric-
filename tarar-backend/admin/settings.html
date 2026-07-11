@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Tarar Admin</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="brand">TARAR<span>Admin Panel</span></div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="orders.html">Orders</a>
+    <a href="settings.html" class="active">Settings</a>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h2>Website Settings</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="modal-box" style="max-width:600px; padding:28px;">
+      <form id="settings-form">
+        <div class="form-group"><label>Brand Name</label><input type="text" id="s-brand"></div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Contact Phone / WhatsApp</label><input type="text" id="s-phone"></div>
+          <div class="form-group"><label>Contact Email</label><input type="email" id="s-email"></div>
+        </div>
+        <div class="form-group"><label>Shipping Charges (Rs.)</label><input type="number" id="s-shipping"></div>
+
+        <h3 style="margin:24px 0 14px; font-size:1rem; color:var(--wood);">Payment Methods</h3>
+        <div class="form-group">
+          <label><input type="checkbox" id="s-cod" style="width:auto; margin-right:8px;">Cash on Delivery Enabled</label>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label>JazzCash Number</label><input type="text" id="s-jazzcash"></div>
+          <div class="form-group"><label>EasyPaisa Number</label><input type="text" id="s-easypaisa"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Bank Account Title</label><input type="text" id="s-bank-title"></div>
+          <div class="form-group"><label>Bank Account Number</label><input type="text" id="s-bank-acc"></div>
+        </div>
+        <div class="form-group"><label>Bank Name</label><input type="text" id="s-bank-name"></div>
+
+        <div class="modal-footer" style="justify-content:flex-start;">
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-box" style="max-width:600px; padding:28px; margin-top:24px;">
+      <h3 style="margin-bottom:14px; font-size:1rem; color:var(--wood);">Change Admin Password</h3>
+      <form id="pw-form">
+        <div class="form-row-2">
+          <div class="form-group"><label>Current Password</label><input type="password" id="pw-current" required></div>
+          <div class="form-group"><label>New Password</label><input type="password" id="pw-new" required></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+requireLogin();
+
+async function loadSettings() {
+  const s = await apiGet('/settings');
+  if (!s) return;
+  document.getElementById('s-brand').value = s.brandName || '';
+  document.getElementById('s-phone').value = s.phone || '';
+  document.getElementById('s-email').value = s.email || '';
+  document.getElementById('s-shipping').value = s.shippingCharges || 0;
+  document.getElementById('s-cod').checked = !!s.codEnabled;
+  document.getElementById('s-jazzcash').value = s.jazzCashNumber || '';
+  document.getElementById('s-easypaisa').value = s.easyPaisaNumber || '';
+  document.getElementById('s-bank-title').value = s.bankAccountTitle || '';
+  document.getElementById('s-bank-acc').value = s.bankAccountNumber || '';
+  document.getElementById('s-bank-name').value = s.bankName || '';
+}
+
+document.getElementById('settings-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const payload = {
+    brandName: document.getElementById('s-brand').value,
+    phone: document.getElementById('s-phone').value,
+    email: document.getElementById('s-email').value,
+    shippingCharges: Number(document.getElementById('s-shipping').value),
+    codEnabled: document.getElementById('s-cod').checked,
+    jazzCashNumber: document.getElementById('s-jazzcash').value,
+    easyPaisaNumber: document.getElementById('s-easypaisa').value,
+    bankAccountTitle: document.getElementById('s-bank-title').value,
+    bankAccountNumber: document.getElementById('s-bank-acc').value,
+    bankName: document.getElementById('s-bank-name').value
+  };
+  await apiJSON('/admin/settings', 'PUT', payload);
+  showToast('Settings saved');
+});
+
+document.getElementById('pw-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const currentPassword = document.getElementById('pw-current').value;
+  const newPassword = document.getElementById('pw-new').value;
+  const res = await apiJSON('/admin/change-password', 'POST', { currentPassword, newPassword });
+  if (res && res.success) {
+    showToast('Password updated successfully');
+    document.getElementById('pw-form').reset();
+  } else {
+    showToast(res?.error || 'Failed to update password');
+  }
+});
+
+loadSettings();
+</script>
+</body>
+</html>

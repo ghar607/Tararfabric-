@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Tarar Admin</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="brand">TARAR<span>Admin Panel</span></div>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="orders.html">Orders</a>
+    <a href="settings.html">Settings</a>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h2>Dashboard</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="stat-cards" id="stats"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Low Stock Alerts</th><th>Stock Left</th></tr></thead>
+        <tbody id="low-stock-body"><tr><td colspan="2" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+requireLogin();
+
+async function load() {
+  const data = await apiGet('/admin/dashboard');
+  if (!data) return;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><span>Total Orders</span><h3>${data.totalOrders}</h3></div>
+    <div class="stat-card warn"><span>Pending Orders</span><h3>${data.pendingOrders}</h3></div>
+    <div class="stat-card warn"><span>Unverified Payments</span><h3>${data.unverifiedPayments}</h3></div>
+    <div class="stat-card"><span>Total Revenue</span><h3>${fmtMoney(data.totalRevenue)}</h3></div>
+    <div class="stat-card"><span>Total Products</span><h3>${data.totalProducts}</h3></div>
+    <div class="stat-card"><span>Total Customers</span><h3>${data.totalCustomers}</h3></div>
+  `;
+
+  const body = document.getElementById('low-stock-body');
+  if (!data.lowStock.length) {
+    body.innerHTML = '<tr><td colspan="2" class="empty">No low stock products</td></tr>';
+  } else {
+    body.innerHTML = data.lowStock.map(p => `<tr><td>${p.name}</td><td>${p.stock}</td></tr>`).join('');
+  }
+}
+load();
+</script>
+</body>
+</html>

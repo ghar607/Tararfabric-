@@ -1,0 +1,99 @@
+{
+  "admin": {
+    "username": "admin",
+    "password": "tarar123"
+  },
+  "sessions": [],
+  "settings": {
+    "brandName": "Tarar Menswear",
+    "phone": "0340-0026136",
+    "email": "support@tararmenswear.com",
+    "shippingCharges": 250,
+    "codEnabled": true,
+    "jazzCashNumber": "0340-0026136",
+    "easyPaisaNumber": "0340-0026136",
+    "bankAccountTitle": "Tarar Menswear",
+    "bankAccountNumber": "PK00-XXXX-0000000000",
+    "bankName": ""
+  },
+  "categories": [
+    { "id": "cat-1", "name": "Wash & Wear" },
+    { "id": "cat-2", "name": "Cotton" },
+    { "id": "cat-3", "name": "Lawn" },
+    { "id": "cat-4", "name": "Casual Wear" },
+    { "id": "cat-5", "name": "Formal Wear" },
+    { "id": "cat-6", "name": "Summer Collection" },
+    { "id": "cat-7", "name": "Winter Collection" }
+  ],
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Charcoal Slim-Fit Blazer",
+      "category": "Formal Wear",
+      "price": 8500,
+      "discountPrice": 0,
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": ["#171310", "#6B4423"],
+      "stock": 24,
+      "status": "in_stock",
+      "featured": true,
+      "description": "A refined charcoal blazer cut for a modern slim fit. Half-canvas construction, breathable wool-blend fabric.",
+      "fabric": "70% Wool, 30% Polyester blend. Dry clean only.",
+      "images": [],
+      "rating": 4.3,
+      "reviewsCount": 42
+    },
+    {
+      "id": "prod-2",
+      "name": "Wood Brown Kurta Shalwar",
+      "category": "Wash & Wear",
+      "price": 4000,
+      "discountPrice": 3200,
+      "sizes": ["M", "L", "XL"],
+      "colors": ["#6B4423", "#3E2A1B"],
+      "stock": 40,
+      "status": "in_stock",
+      "featured": true,
+      "description": "Comfortable wash & wear kurta shalwar, perfect for daily use.",
+      "fabric": "100% Cotton Blend.",
+      "images": [],
+      "rating": 4.6,
+      "reviewsCount": 67
+    },
+    {
+      "id": "prod-3",
+      "name": "Classic White Oxford Shirt",
+      "category": "Cotton",
+      "price": 2800,
+      "discountPrice": 0,
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": ["#FBF7F0", "#171310"],
+      "stock": 30,
+      "status": "in_stock",
+      "featured": false,
+      "description": "Classic Oxford weave shirt for everyday formal wear.",
+      "fabric": "100% Cotton.",
+      "images": [],
+      "rating": 4.1,
+      "reviewsCount": 28
+    },
+    {
+      "id": "prod-4",
+      "name": "Black Leather Bomber Jacket",
+      "category": "Winter Collection",
+      "price": 12900,
+      "discountPrice": 0,
+      "sizes": ["M", "L", "XL"],
+      "colors": ["#171310"],
+      "stock": 12,
+      "status": "in_stock",
+      "featured": true,
+      "description": "Premium faux-leather bomber jacket for winter styling.",
+      "fabric": "Faux Leather, Polyester Lining.",
+      "images": [],
+      "rating": 4.8,
+      "reviewsCount": 91
+    }
+  ],
+  "orders": []
+}
