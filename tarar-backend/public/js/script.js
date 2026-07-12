@@ -1,4 +1,4 @@
-// ===== TARAR MENSWEAR — shared script =====
+// ===== LIBAS HOUSE — shared script =====
 
 // Mobile nav toggle
 document.addEventListener('DOMContentLoaded', () => {

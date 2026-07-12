@@ -283,7 +283,7 @@ app.get('/api/admin/dashboard', requireAuth, (req, res) => {
 
 app.listen(PORT, () => {
   console.log('==========================================');
-  console.log('  Tarar Menswear Backend Running!');
+  console.log('  Libas Menswear Backend Running!');
   console.log('  Store API:   http://127.0.0.1:' + PORT + '/api');
   console.log('  Admin Panel: http://127.0.0.1:' + PORT + '/admin/login.html');
   console.log('  Default Login -> username: admin | password: tarar123');

@@ -1,7 +1,7 @@
 {
   "name": "tarar-menswear-backend",
   "version": "1.0.0",
-  "description": "Backend + Admin Panel for Tarar Menswear",
+  "description": "Backend + Admin Panel for Libas Menswear",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
