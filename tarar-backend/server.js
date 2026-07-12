@@ -153,6 +153,13 @@ app.post('/api/admin/products', requireAuth, upload.array('images', 6), (req, re
     featured: body.featured === 'true' || body.featured === true,
     description: body.description || '',
     fabric: body.fabric || '',
+    productType: body.productType || 'clothing',
+    season: body.season || 'All Season',
+    volume: body.volume || '',
+    concentration: body.concentration || '',
+    notes: body.notes || '',
+    strapMaterial: body.strapMaterial || '',
+    movement: body.movement || '',
     images: newImages,
     rating: 0,
     reviewsCount: 0

@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Products — Libas Admin</title>
 <link rel="stylesheet" href="css/admin.css">
-<link rel="icon" type="image/svg+xml" href="images/logo-icon.svg">
-<link rel="icon" type="image/svg+xml" href="images/logo-icon.svg">
 </head>
 <body>
 <div class="admin-layout">
@@ -16,6 +14,7 @@
     <a href="products.html" class="active">Products</a>
     <a href="categories.html">Categories</a>
     <a href="orders.html">Orders</a>
+    <a href="deals.html">Deals</a>
     <a href="settings.html">Settings</a>
   </aside>
   <main class="main">
@@ -30,9 +29,9 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Featured</th><th>Actions</th></tr>
+          <tr><th>Name</th><th>Type</th><th>Category</th><th>Gender</th><th>Price</th><th>Stock</th><th>Status</th><th>Featured</th><th>Actions</th></tr>
         </thead>
-        <tbody id="products-body"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+        <tbody id="products-body"><tr><td colspan="9" class="empty">Loading...</td></tr></tbody>
       </table>
     </div>
   </main>
@@ -44,10 +43,27 @@
     <h3 id="modal-title">Add Product</h3>
     <form id="product-form">
       <input type="hidden" id="edit-id">
+
+      <div class="form-group">
+        <label>Product Type</label>
+        <select id="f-type" onchange="updateFieldVisibility()">
+          <option value="clothing">Clothing</option>
+          <option value="perfume">Perfume</option>
+          <option value="watch">Watch</option>
+        </select>
+      </div>
+
       <div class="form-row-2">
         <div class="form-group"><label>Product Name</label><input type="text" id="f-name" required></div>
-        <div class="form-group"><label>Category</label><select id="f-category" required></select></div>
+        <div class="form-group">
+          <label>Category</label>
+          <div style="display:flex; gap:6px;">
+            <select id="f-category" required style="flex:1;"></select>
+            <button type="button" class="btn" onclick="quickAddCategory()" title="Add new category" style="padding:0 16px; font-weight:700;">+</button>
+          </div>
+        </div>
       </div>
+
       <div class="form-row-2">
         <div class="form-group"><label>Price (Rs.)</label><input type="number" id="f-price" required></div>
         <div class="form-group"><label>Discount Price (Rs., optional)</label><input type="number" id="f-discount"></div>
@@ -58,32 +74,98 @@
           <select id="f-featured"><option value="false">No</option><option value="true">Yes</option></select>
         </div>
       </div>
-
-      <div class="form-group">
-        <label>Available Sizes</label>
-        <div class="check-row" id="size-check-row">
-          <label><input type="checkbox" value="S"> S</label>
-          <label><input type="checkbox" value="M"> M</label>
-          <label><input type="checkbox" value="L"> L</label>
-          <label><input type="checkbox" value="XL"> XL</label>
-          <label><input type="checkbox" value="XXL"> XXL</label>
+      <div class="form-row-2">
+        <div class="form-group"><label>Gender</label>
+          <select id="f-gender">
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+            <option value="kids">Kids</option>
+            <option value="couple">Couple</option>
+            <option value="unisex">Unisex</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Season</label>
+          <select id="f-season">
+            <option value="All Season">All Season</option>
+            <option value="Autumn-Winter">Autumn / Winter</option>
+            <option value="Spring-Summer">Spring / Summer</option>
+          </select>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Available Colors</label>
-        <div class="color-row" id="color-row">
-          <span style="background:#171310;" data-color="#171310" title="Black"></span>
-          <span style="background:#6B4423;" data-color="#6B4423" title="Wood Brown"></span>
-          <span style="background:#3E2A1B;" data-color="#3E2A1B" title="Dark Brown"></span>
-          <span style="background:#C6A15B;" data-color="#C6A15B" title="Gold"></span>
-          <span style="background:#FBF7F0; border:1px solid #ddd;" data-color="#FBF7F0" title="White"></span>
-          <span style="background:#2C3E6B;" data-color="#2C3E6B" title="Navy"></span>
+      <!-- CLOTHING-ONLY FIELDS -->
+      <div id="clothing-fields">
+        <div class="form-group"><label>Stitching Options</label>
+          <div class="check-row" id="stitching-check-row">
+            <label><input type="checkbox" value="Stitched"> Stitched</label>
+            <label><input type="checkbox" value="Unstitched"> Unstitched</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Available Sizes</label>
+          <div class="check-row" id="size-check-row">
+            <label><input type="checkbox" value="S"> S</label>
+            <label><input type="checkbox" value="M"> M</label>
+            <label><input type="checkbox" value="L"> L</label>
+            <label><input type="checkbox" value="XL"> XL</label>
+            <label><input type="checkbox" value="XXL"> XXL</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Available Colors</label>
+          <div class="color-row" id="color-row">
+            <span style="background:#171310;" data-color="#171310" title="Black"></span>
+            <span style="background:#6B4423;" data-color="#6B4423" title="Wood Brown"></span>
+            <span style="background:#3E2A1B;" data-color="#3E2A1B" title="Dark Brown"></span>
+            <span style="background:#C6A15B;" data-color="#C6A15B" title="Gold"></span>
+            <span style="background:#FBF7F0; border:1px solid #ddd;" data-color="#FBF7F0" title="White"></span>
+            <span style="background:#2C3E6B;" data-color="#2C3E6B" title="Navy"></span>
+          </div>
+        </div>
+
+        <div class="form-group"><label>Fabric Details</label><textarea id="f-fabric" rows="2"></textarea></div>
+      </div>
+
+      <!-- PERFUME-ONLY FIELDS -->
+      <div id="perfume-fields" style="display:none;">
+        <div class="form-row-2">
+          <div class="form-group"><label>Volume (ml)</label><input type="text" id="f-volume" placeholder="e.g. 50ml, 100ml"></div>
+          <div class="form-group"><label>Concentration</label>
+            <select id="f-concentration">
+              <option value="EDT">EDT (Eau de Toilette)</option>
+              <option value="EDP">EDP (Eau de Parfum)</option>
+              <option value="Body Spray">Body Spray</option>
+              <option value="Attar">Attar</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Fragrance Notes</label><textarea id="f-notes" rows="2" placeholder="e.g. Top: Bergamot, Middle: Rose, Base: Musk"></textarea></div>
+      </div>
+
+      <!-- WATCH-ONLY FIELDS -->
+      <div id="watch-fields" style="display:none;">
+        <div class="form-row-2">
+          <div class="form-group"><label>Strap Material</label>
+            <select id="f-strap">
+              <option value="Stainless Steel">Stainless Steel</option>
+              <option value="Leather">Leather</option>
+              <option value="Rubber">Rubber</option>
+              <option value="Mesh">Mesh</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Movement Type</label>
+            <select id="f-movement">
+              <option value="Quartz">Quartz</option>
+              <option value="Automatic">Automatic</option>
+              <option value="Chronograph">Chronograph</option>
+            </select>
+          </div>
         </div>
       </div>
 
       <div class="form-group"><label>Description</label><textarea id="f-desc" rows="3"></textarea></div>
-      <div class="form-group"><label>Fabric Details</label><textarea id="f-fabric" rows="2"></textarea></div>
 
       <div class="form-group">
         <label>Product Images (up to 6)</label>
@@ -106,6 +188,22 @@ let categories = [];
 let currentProducts = [];
 let keepImages = [];
 
+function updateFieldVisibility() {
+  const type = document.getElementById('f-type').value;
+  document.getElementById('clothing-fields').style.display = type === 'clothing' ? 'block' : 'none';
+  document.getElementById('perfume-fields').style.display = type === 'perfume' ? 'block' : 'none';
+  document.getElementById('watch-fields').style.display = type === 'watch' ? 'block' : 'none';
+}
+
+async function quickAddCategory() {
+  const name = prompt("New category name (e.g. Men's Perfume, Women's Watch, Kids Cloth):");
+  if (!name || !name.trim()) return;
+  await apiJSON('/admin/categories', 'POST', { name: name.trim() });
+  await loadCategories();
+  document.getElementById('f-category').value = name.trim();
+  showToast('Category added');
+}
+
 async function loadCategories() {
   categories = await apiGet('/categories') || [];
   document.getElementById('f-category').innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
@@ -115,13 +213,15 @@ async function loadProducts() {
   currentProducts = await apiGet('/products') || [];
   const body = document.getElementById('products-body');
   if (!currentProducts.length) {
-    body.innerHTML = '<tr><td colspan="7" class="empty">No products yet. Add your first product.</td></tr>';
+    body.innerHTML = '<tr><td colspan="9" class="empty">No products yet. Add your first product.</td></tr>';
     return;
   }
   body.innerHTML = currentProducts.map(p => `
     <tr>
       <td>${p.name}</td>
+      <td style="text-transform:capitalize;">${p.productType || 'clothing'}</td>
       <td>${p.category}</td>
+      <td style="text-transform:capitalize;">${p.gender || 'unisex'}</td>
       <td>${p.discountPrice ? `<s style="color:#a39a8f;">${fmtMoney(p.price)}</s> ${fmtMoney(p.discountPrice)}` : fmtMoney(p.price)}</td>
       <td>${p.stock}</td>
       <td><span class="badge ${p.status}">${p.status === 'in_stock' ? 'In Stock' : 'Out of Stock'}</span></td>
@@ -142,6 +242,11 @@ function openAddModal() {
   keepImages = [];
   document.querySelectorAll('#size-check-row input').forEach(cb => cb.checked = false);
   document.querySelectorAll('#color-row span').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('#stitching-check-row input').forEach(cb => cb.checked = false);
+  document.getElementById('f-gender').value = 'men';
+  document.getElementById('f-type').value = 'clothing';
+  document.getElementById('f-season').value = 'All Season';
+  updateFieldVisibility();
   document.getElementById('modal').classList.add('show');
 }
 
@@ -158,14 +263,24 @@ function openEditModal(id) {
   document.getElementById('f-featured').value = p.featured ? 'true' : 'false';
   document.getElementById('f-desc').value = p.description || '';
   document.getElementById('f-fabric').value = p.fabric || '';
+  document.getElementById('f-gender').value = p.gender || 'men';
+  document.getElementById('f-type').value = p.productType || 'clothing';
+  document.getElementById('f-season').value = p.season || 'All Season';
+  document.getElementById('f-volume').value = p.volume || '';
+  document.getElementById('f-notes').value = p.notes || '';
+  document.getElementById('f-concentration').value = p.concentration || 'EDT';
+  document.getElementById('f-strap').value = p.strapMaterial || 'Stainless Steel';
+  document.getElementById('f-movement').value = p.movement || 'Quartz';
 
-  document.querySelectorAll('#size-check-row input').forEach(cb => cb.checked = p.sizes.includes(cb.value));
+  document.querySelectorAll('#size-check-row input').forEach(cb => cb.checked = (p.sizes || []).includes(cb.value));
+  document.querySelectorAll('#stitching-check-row input').forEach(cb => cb.checked = (p.stitching || []).includes(cb.value));
   document.querySelectorAll('#color-row span').forEach(s => {
-    s.classList.toggle('active', p.colors.includes(s.dataset.color));
+    s.classList.toggle('active', (p.colors || []).includes(s.dataset.color));
   });
 
   keepImages = p.images || [];
   renderExistingImages();
+  updateFieldVisibility();
 
   document.getElementById('modal').classList.add('show');
 }
@@ -194,18 +309,28 @@ document.getElementById('product-form').addEventListener('submit', async (e) => 
   const id = document.getElementById('edit-id').value;
   const sizes = Array.from(document.querySelectorAll('#size-check-row input:checked')).map(cb => cb.value);
   const colors = Array.from(document.querySelectorAll('#color-row span.active')).map(s => s.dataset.color);
+  const stitching = Array.from(document.querySelectorAll('#stitching-check-row input:checked')).map(cb => cb.value);
 
   const fd = new FormData();
   fd.append('name', document.getElementById('f-name').value);
   fd.append('category', document.getElementById('f-category').value);
+  fd.append('productType', document.getElementById('f-type').value);
+  fd.append('season', document.getElementById('f-season').value);
   fd.append('price', document.getElementById('f-price').value);
   fd.append('discountPrice', document.getElementById('f-discount').value || 0);
   fd.append('stock', document.getElementById('f-stock').value);
   fd.append('featured', document.getElementById('f-featured').value);
   fd.append('description', document.getElementById('f-desc').value);
   fd.append('fabric', document.getElementById('f-fabric').value);
+  fd.append('gender', document.getElementById('f-gender').value);
   fd.append('sizes', JSON.stringify(sizes));
   fd.append('colors', JSON.stringify(colors));
+  fd.append('stitching', JSON.stringify(stitching));
+  fd.append('volume', document.getElementById('f-volume').value);
+  fd.append('concentration', document.getElementById('f-concentration').value);
+  fd.append('notes', document.getElementById('f-notes').value);
+  fd.append('strapMaterial', document.getElementById('f-strap').value);
+  fd.append('movement', document.getElementById('f-movement').value);
   if (id) fd.append('keepImages', JSON.stringify(keepImages));
 
   const files = document.getElementById('f-images').files;
