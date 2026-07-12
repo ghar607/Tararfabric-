@@ -17,13 +17,111 @@
     "bankName": ""
   },
   "categories": [
-    { "id": "cat-1", "name": "Wash & Wear" },
-    { "id": "cat-2", "name": "Cotton" },
-    { "id": "cat-3", "name": "Lawn" },
-    { "id": "cat-4", "name": "Casual Wear" },
-    { "id": "cat-5", "name": "Formal Wear" },
-    { "id": "cat-6", "name": "Summer Collection" },
-    { "id": "cat-7", "name": "Winter Collection" }
+    {
+      "id": "cat-main-cloth",
+      "name": "Cloth Shop",
+      "parentId": null
+    },
+    {
+      "id": "cat-main-baby",
+      "name": "Baby Shop",
+      "parentId": null
+    },
+    {
+      "id": "cat-main-perfume",
+      "name": "Perfume Shop",
+      "parentId": null
+    },
+    {
+      "id": "cat-main-watch",
+      "name": "Watch Shop",
+      "parentId": null
+    },
+    {
+      "id": "cat-1",
+      "name": "Wash & Wear",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-2",
+      "name": "Cotton",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-3",
+      "name": "Lawn",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-4",
+      "name": "Casual Wear",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-5",
+      "name": "Formal Wear",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-6",
+      "name": "Summer Collection",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-7",
+      "name": "Winter Collection",
+      "parentId": "cat-main-cloth"
+    },
+    {
+      "id": "cat-baby-1",
+      "name": "Baby Boy Clothing",
+      "parentId": "cat-main-baby"
+    },
+    {
+      "id": "cat-baby-2",
+      "name": "Baby Girl Clothing",
+      "parentId": "cat-main-baby"
+    },
+    {
+      "id": "cat-baby-3",
+      "name": "Baby Accessories",
+      "parentId": "cat-main-baby"
+    },
+    {
+      "id": "cat-perfume-1",
+      "name": "Men's Perfume",
+      "parentId": "cat-main-perfume"
+    },
+    {
+      "id": "cat-perfume-2",
+      "name": "Women's Perfume",
+      "parentId": "cat-main-perfume"
+    },
+    {
+      "id": "cat-perfume-3",
+      "name": "Body Sprays",
+      "parentId": "cat-main-perfume"
+    },
+    {
+      "id": "cat-perfume-4",
+      "name": "Attar / Oud",
+      "parentId": "cat-main-perfume"
+    },
+    {
+      "id": "cat-watch-1",
+      "name": "Men's Watch",
+      "parentId": "cat-main-watch"
+    },
+    {
+      "id": "cat-watch-2",
+      "name": "Women's Watch",
+      "parentId": "cat-main-watch"
+    },
+    {
+      "id": "cat-watch-3",
+      "name": "Couple Watch",
+      "parentId": "cat-main-watch"
+    }
   ],
   "products": [
     {
@@ -32,8 +130,17 @@
       "category": "Formal Wear",
       "price": 8500,
       "discountPrice": 0,
-      "sizes": ["S", "M", "L", "XL", "XXL"],
-      "colors": ["#171310", "#6B4423"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "#171310",
+        "#6B4423"
+      ],
       "stock": 24,
       "status": "in_stock",
       "featured": true,
@@ -49,8 +156,15 @@
       "category": "Wash & Wear",
       "price": 4000,
       "discountPrice": 3200,
-      "sizes": ["M", "L", "XL"],
-      "colors": ["#6B4423", "#3E2A1B"],
+      "sizes": [
+        "M",
+        "L",
+        "XL"
+      ],
+      "colors": [
+        "#6B4423",
+        "#3E2A1B"
+      ],
       "stock": 40,
       "status": "in_stock",
       "featured": true,
@@ -66,8 +180,16 @@
       "category": "Cotton",
       "price": 2800,
       "discountPrice": 0,
-      "sizes": ["S", "M", "L", "XL"],
-      "colors": ["#FBF7F0", "#171310"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "colors": [
+        "#FBF7F0",
+        "#171310"
+      ],
       "stock": 30,
       "status": "in_stock",
       "featured": false,
@@ -83,8 +205,14 @@
       "category": "Winter Collection",
       "price": 12900,
       "discountPrice": 0,
-      "sizes": ["M", "L", "XL"],
-      "colors": ["#171310"],
+      "sizes": [
+        "M",
+        "L",
+        "XL"
+      ],
+      "colors": [
+        "#171310"
+      ],
       "stock": 12,
       "status": "in_stock",
       "featured": true,

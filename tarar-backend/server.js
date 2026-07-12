@@ -98,7 +98,7 @@ app.get('/api/categories', (req, res) => {
 });
 app.post('/api/admin/categories', requireAuth, (req, res) => {
   const db = readDB();
-  const cat = { id: 'cat-' + uuidv4(), name: req.body.name };
+  const cat = { id: 'cat-' + uuidv4(), name: req.body.name, parentId: req.body.parentId || null };
   db.categories.push(cat);
   writeDB(db);
   res.json(cat);
@@ -108,6 +108,7 @@ app.put('/api/admin/categories/:id', requireAuth, (req, res) => {
   const cat = db.categories.find(c => c.id === req.params.id);
   if (!cat) return res.status(404).json({ error: 'Category not found' });
   cat.name = req.body.name;
+  if (req.body.parentId !== undefined) cat.parentId = req.body.parentId || null;
   writeDB(db);
   res.json(cat);
 });

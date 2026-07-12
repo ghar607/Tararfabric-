@@ -206,7 +206,14 @@ async function quickAddCategory() {
 
 async function loadCategories() {
   categories = await apiGet('/categories') || [];
-  document.getElementById('f-category').innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+  
+  const mains = categories.filter(c => !c.parentId);
+  const optionsHTML = mains.map(main => {
+    const subs = categories.filter(c => c.parentId === main.id);
+    if (!subs.length) return `<option value="${main.name}">${main.name}</option>`;
+    return `<optgroup label="${main.name}">` + subs.map(s => `<option value="${s.name}">${s.name}</option>`).join('') + `</optgroup>`;
+  }).join('');
+  document.getElementById('f-category').innerHTML = optionsHTML;
 }
 
 async function loadProducts() {
