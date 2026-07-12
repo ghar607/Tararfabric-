@@ -1,0 +1,21 @@
+<svg width="176" height="176" viewBox="15 24 176 176" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E7C077"/>
+      <stop offset="100%" stop-color="#AD8542"/>
+    </linearGradient>
+  </defs>
+  <circle cx="103" cy="112" r="78" fill="#1B1611"/>
+  <circle cx="103" cy="112" r="78" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+  <g fill="none" stroke="url(#goldGrad)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 94 59 C 94 49, 112 49, 112 59 C 112 65, 105 65, 103 61" stroke-width="5"/>
+    <path d="M 103 65 L 103 75" stroke-width="5"/>
+    <path d="M 58 113 C 68 95, 89 79, 103 75 C 117 79, 138 95, 148 113" stroke-width="5"/>
+    <path d="M 58 113 C 53 107, 54 101, 60 98" stroke-width="5"/>
+    <path d="M 148 113 C 153 107, 152 101, 146 98" stroke-width="5"/>
+    <path d="M 74 113 L 132 113" stroke-width="5"/>
+    <path d="M 82 113 L 66 125 L 74 137 L 86 125 L 86 175 L 120 175 L 120 125 L 132 137 L 140 125 L 124 113 L 111 113 L 103 121 L 95 113 Z" stroke-width="4"/>
+  </g>
+  <text x="42" y="120" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="url(#goldGrad)">L</text>
+  <text x="164" y="120" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="24" fill="url(#goldGrad)">H</text>
+</svg>
