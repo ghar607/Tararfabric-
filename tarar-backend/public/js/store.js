@@ -164,6 +164,81 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartBadge();
   updateWishlistBadge();
   if (document.getElementById('shop-grid')) renderShopGrid();
+  if (document.querySelector('.cart-table')) renderCartPage();
+  if (document.getElementById('wishlist-grid')) renderWishlistPage();
   if (document.querySelector('.pd-info')) renderProductDetail();
   else if (document.getElementById('home-grid')) renderHomeGrid();
 });
+
+// ---- CART PAGE RENDERING ----
+async function renderCartPage() {
+  const tbody = document.querySelector('.cart-table tbody');
+  if (!tbody) return;
+  const cart = getCart();
+  if (!cart.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#a39a8f;">Your cart is empty. <a href="shop.html">Continue shopping</a></td></tr>';
+    updateCartSummary(0, 0);
+    return;
+  }
+  const rows = [];
+  let subtotal = 0;
+  for (const item of cart) {
+    const p = await apiGet('/products/' + item.id);
+    if (!p) continue;
+    const unitPrice = p.discountPrice || p.price;
+    const lineTotal = unitPrice * item.qty;
+    subtotal += lineTotal;
+    const img = (p.images && p.images[0]) ? ('<img src="' + p.images[0] + '" style="width:100%;height:100%;object-fit:cover;">') : '';
+    rows.push(
+      '<tr data-id="' + p.id + '">' +
+        '<td><div class="cart-product"><div class="cart-thumb">' + img + '</div><div class="cart-product-info"><h4>' + p.name + '</h4><span>' + (p.category || '') + '</span></div></div></td>' +
+        '<td><strong>' + money(unitPrice) + '</strong></td>' +
+        '<td><div class="qty-box"><button class="qty-minus" onclick="changeQty(\'' + p.id + '\', -1)">-</button><input type="text" value="' + item.qty + '" readonly><button class="qty-plus" onclick="changeQty(\'' + p.id + '\', 1)">+</button></div></td>' +
+        '<td><strong>' + money(lineTotal) + '</strong></td>' +
+        '<td><a href="#" class="remove-btn" onclick="removeCartItem(\'' + p.id + '\'); return false;">Remove</a></td>' +
+      '</tr>'
+    );
+  }
+  tbody.innerHTML = rows.join('') || '<tr><td colspan="5" style="text-align:center;padding:40px;color:#a39a8f;">Your cart is empty.</td></tr>';
+  updateCartSummary(subtotal, subtotal > 0 ? 250 : 0);
+}
+
+function updateCartSummary(subtotal, shipping) {
+  const rows = document.querySelectorAll('.summary-row');
+  if (rows[0]) rows[0].querySelector('span:last-child').textContent = money(subtotal);
+  if (rows[1]) rows[1].querySelector('span:last-child').textContent = money(shipping);
+  if (rows[3]) rows[3].querySelector('span:last-child').textContent = money(subtotal + shipping);
+}
+
+function changeQty(id, delta) {
+  const cart = getCart();
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveCart(cart);
+  renderCartPage();
+}
+
+function removeCartItem(id) {
+  let cart = getCart();
+  cart = cart.filter(i => i.id !== id);
+  saveCart(cart);
+  renderCartPage();
+}
+
+// ---- WISHLIST PAGE RENDERING ----
+async function renderWishlistPage() {
+  const grid = document.getElementById('wishlist-grid');
+  if (!grid) return;
+  const ids = getWishlist();
+  if (!ids.length) {
+    grid.innerHTML = '<p style="padding:40px;text-align:center;color:#a39a8f;">Your wishlist is empty. <a href="shop.html">Browse products</a></p>';
+    return;
+  }
+  const products = [];
+  for (const id of ids) {
+    const p = await apiGet('/products/' + id);
+    if (p) products.push(p);
+  }
+  grid.innerHTML = products.length ? products.map(productCardHTML).join('') : '<p style="padding:40px;text-align:center;color:#a39a8f;">Your wishlist is empty.</p>';
+}
