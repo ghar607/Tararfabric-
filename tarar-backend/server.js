@@ -232,6 +232,12 @@ app.post('/api/orders', (req, res) => {
     status: 'pending',
     createdAt: new Date().toISOString()
   };
+  const authHeader = req.headers.authorization || '';
+  const custToken = authHeader.replace('Bearer ', '').trim();
+  if (custToken) {
+    const session = (db.customerSessions || []).find(s => s.token === custToken);
+    if (session) order.customerId = session.customerId;
+  }
   db.orders.unshift(order);
   writeDB(db);
   res.json(order);
