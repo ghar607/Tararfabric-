@@ -93,6 +93,90 @@ app.put('/api/admin/settings', requireAuth, (req, res) => {
 });
 
 // ================= CATEGORIES =================
+function hashPassword(pw) {
+  return crypto.createHash('sha256').update(pw).digest('hex');
+}
+
+app.post('/api/auth/register', (req, res) => {
+  const { name, phone, email, password, city, address } = req.body;
+  if (!name || !phone || !password) return res.status(400).json({ error: 'Name, phone, and password are required.' });
+  const cleanPhone = String(phone).replace(/[\s-]/g, '');
+  if (!/^03\d{9}$/.test(cleanPhone)) return res.status(400).json({ error: 'Please enter a valid Pakistani mobile number (e.g. 03001234567).' });
+  if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  const db = readDB();
+  if (!db.customers) db.customers = [];
+  if (!db.customerSessions) db.customerSessions = [];
+  if (db.customers.find(c => c.phone === cleanPhone)) return res.status(400).json({ error: 'An account with this phone number already exists.' });
+  const customer = { id: 'cust-' + uuidv4(), name, phone: cleanPhone, email: email || '', city: city || '', address: address || '', passwordHash: hashPassword(password), createdAt: new Date().toISOString() };
+  db.customers.push(customer);
+  const token = crypto.randomBytes(24).toString('hex');
+  db.customerSessions.push({ token, customerId: customer.id });
+  writeDB(db);
+  res.json({ token, customer: { name: customer.name, phone: customer.phone, email: customer.email, city: customer.city, address: customer.address } });
+});
+
+app.post('/api/auth/login', (req, res) => {
+  const { identifier, password } = req.body;
+  if (!identifier || !password) return res.status(400).json({ error: 'Please enter your phone/email and password.' });
+  const db = readDB();
+  if (!db.customers) db.customers = [];
+  if (!db.customerSessions) db.customerSessions = [];
+  const cleanId = String(identifier).replace(/[\s-]/g, '');
+  const customer = db.customers.find(c => c.phone === cleanId || (c.email && c.email.toLowerCase() === identifier.toLowerCase()));
+  if (!customer || customer.passwordHash !== hashPassword(password)) return res.status(401).json({ error: 'Invalid phone/email or password.' });
+  const token = crypto.randomBytes(24).toString('hex');
+  db.customerSessions.push({ token, customerId: customer.id });
+  writeDB(db);
+  res.json({ token, customer: { name: customer.name, phone: customer.phone, email: customer.email, city: customer.city, address: customer.address } });
+});
+
+function requireCustomerAuth(req, res, next) {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace('Bearer ', '').trim();
+  const db = readDB();
+  const session = (db.customerSessions || []).find(s => s.token === token);
+  if (!token || !session) return res.status(401).json({ error: 'Please login to continue.' });
+  req.customerId = session.customerId;
+  next();
+}
+
+app.post('/api/auth/logout', requireCustomerAuth, (req, res) => {
+  const token = req.headers.authorization.replace('Bearer ', '').trim();
+  const db = readDB();
+  db.customerSessions = (db.customerSessions || []).filter(s => s.token !== token);
+  writeDB(db);
+  res.json({ success: true });
+});
+
+app.get('/api/auth/me', requireCustomerAuth, (req, res) => {
+  const db = readDB();
+  const customer = (db.customers || []).find(c => c.id === req.customerId);
+  if (!customer) return res.status(404).json({ error: 'Account not found.' });
+  res.json({ name: customer.name, phone: customer.phone, email: customer.email, city: customer.city, address: customer.address });
+});
+
+app.get('/api/my/orders', requireCustomerAuth, (req, res) => {
+  const db = readDB();
+  const customer = (db.customers || []).find(c => c.id === req.customerId);
+  if (!customer) return res.json([]);
+  const orders = (db.orders || []).filter(o => o.customerId === req.customerId || (o.customer && o.customer.phone === customer.phone));
+  orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json(orders);
+});
+
+app.get('/api/my/stats', requireCustomerAuth, (req, res) => {
+  const db = readDB();
+  const customer = (db.customers || []).find(c => c.id === req.customerId);
+  const orders = customer ? (db.orders || []).filter(o => o.customerId === req.customerId || (o.customer && o.customer.phone === customer.phone)) : [];
+  res.json({
+    totalOrders: orders.length,
+    pending: orders.filter(o => o.status === 'pending').length,
+    dispatched: orders.filter(o => o.status === 'dispatched').length,
+    delivered: orders.filter(o => o.status === 'delivered').length,
+    totalSpent: orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
+  });
+});
+
 app.get('/api/categories', (req, res) => {
   res.json(readDB().categories);
 });
