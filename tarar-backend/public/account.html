@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" type="image/svg+xml" href="images/logo-icon.svg">
-<link rel="icon" type="image/svg+xml" href="images/logo-icon.svg">
 </head>
 <body>
 
@@ -24,14 +23,15 @@
       <a href="contact.html">Contact Us</a>
     </nav>
     <div class="header-icons">
-      <a href="cart.html" class="icon-btn">&#128722;<span class="badge">2</span></a>
+      <a href="wishlist.html" class="icon-btn">&#9825;<span class="badge">0</span></a>
+      <a href="cart.html" class="icon-btn">&#128722;<span class="badge">0</span></a>
       <button class="menu-toggle">&#9776;</button>
     </div>
   </div>
 </header>
 
 <div class="page-banner">
-  <p class="eyebrow">Welcome Back</p>
+  <p class="eyebrow">Welcome</p>
   <h1>My Account</h1>
   <div class="breadcrumb"><a href="index.html">Home</a> / Account</div>
 </div>
@@ -39,71 +39,72 @@
 <!-- LOGIN / REGISTER (shown for guests) -->
 <section class="section" id="auth-section">
   <div class="container">
-    <div class="auth-box">
+    <div class="auth-box" id="login-box" style="max-width:420px;margin:0 auto;">
       <h2>Login</h2>
-      <p class="sub">Access your orders, wishlist &amp; saved addresses</p>
-      <form data-demo-form>
+      <p class="sub">Access your orders and account details</p>
+      <p id="login-error" style="display:none; color:#b03030; font-size:0.85rem; margin-bottom:10px;"></p>
+      <form id="login-form">
         <div class="form-group">
-          <label>Email or Mobile Number</label>
-          <input type="text" placeholder="you@example.com" required>
+          <label>Mobile Number or Email</label>
+          <input type="text" id="login-identifier" placeholder="03XXXXXXXXX or you@example.com" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" placeholder="••••••••" required>
+          <input type="password" id="login-password" placeholder="••••••••" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
       </form>
-      <p class="auth-switch">Don't have an account? <a href="#" onclick="document.getElementById('login-box').style.display='none'; document.getElementById('register-box').style.display='block'; return false;">Register here</a></p>
+      <p class="auth-switch"><a href="#" onclick="showForgotPassword(); return false;">Forgot Password?</a></p>
+      <p class="auth-switch">Don't have an account? <a href="#" onclick="document.getElementById('login-box').style.display='none'; document.getElementById('register-box').style.display='block'; return false;">Create one here</a></p>
     </div>
 
-    <div class="auth-box" style="display:none; margin-top:24px;" id="register-box">
+    <div class="auth-box" style="display:none; max-width:420px;margin:0 auto;" id="register-box">
       <h2>Create Account</h2>
-      <p class="sub">Join Libas House for faster checkout</p>
-      <form data-demo-form>
-        <div class="form-group"><label>Full Name</label><input type="text" required></div>
-        <div class="form-group"><label>Mobile Number</label><input type="tel" required></div>
-        <div class="form-group"><label>Email Address</label><input type="email" required></div>
-        <div class="form-group"><label>Password</label><input type="password" required></div>
+      <p class="sub">Sign up to shop and track your orders</p>
+      <p id="register-error" style="display:none; color:#b03030; font-size:0.85rem; margin-bottom:10px;"></p>
+      <form id="register-form">
+        <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" required></div>
+        <div class="form-group"><label>City</label><input type="text" id="reg-city" required></div>
+        <div class="form-group"><label>Address</label><input type="text" id="reg-address" required></div>
+        <div class="form-group"><label>Mobile Number (Pakistani)</label><input type="tel" id="reg-phone" placeholder="03001234567" required></div>
+        <div class="form-group"><label>Email Address (optional)</label><input type="email" id="reg-email"></div>
+        <div class="form-group"><label>Password (min 8 characters)</label><input type="password" id="reg-password" minlength="8" required></div>
+        <div class="form-group"><label>Confirm Password</label><input type="password" id="reg-password2" minlength="8" required></div>
         <button type="submit" class="btn btn-primary btn-block">Register</button>
       </form>
+      <p class="auth-switch">Already have an account? <a href="#" onclick="document.getElementById('register-box').style.display='none'; document.getElementById('login-box').style.display='block'; return false;">Login here</a></p>
     </div>
   </div>
 </section>
 
-<!-- DASHBOARD (demo — would show after login) -->
-<section class="section" style="padding-top:0;">
+<!-- DASHBOARD (shown after login, real account data) -->
+<section class="section" style="padding-top:0; display:none;" id="dashboard-section">
   <div class="container">
-    <div class="stitch-divider" style="margin-bottom:40px;"><span>&#10022;</span></div>
-    <p class="eyebrow text-center" style="display:block; text-align:center; margin-bottom:8px;">Preview</p>
-    <h2 class="text-center" style="margin-bottom:40px;">Customer Dashboard (After Login)</h2>
+    <h2 class="text-center" style="margin-bottom:8px;">Welcome, <span id="dash-name"></span></h2>
+    <p class="text-center" style="margin-bottom:40px; color:#8a8074;">Here's a summary of your account</p>
 
     <div class="account-layout">
       <aside class="account-side">
         <a href="#" class="active">Dashboard</a>
-        <a href="#">My Orders</a>
-        <a href="#">Order Tracking</a>
-        <a href="#">Wishlist</a>
-        <a href="#">Saved Address</a>
-        <a href="#">Profile Settings</a>
-        <a href="#">Change Password</a>
-        <a href="index.html">Logout</a>
+        <a href="#" onclick="document.getElementById('orders-table-wrap').scrollIntoView({behavior:'smooth'}); return false;">My Orders</a>
+        <a href="wishlist.html">Wishlist</a>
+        <a href="#" onclick="doLogout(); return false;">Logout</a>
       </aside>
 
       <div>
         <div class="stat-cards">
-          <div class="stat-card"><span>Total Orders</span><h3>12</h3></div>
-          <div class="stat-card"><span>Pending Orders</span><h3>1</h3></div>
-          <div class="stat-card"><span>Wishlist Items</span><h3>3</h3></div>
+          <div class="stat-card"><span>Total Orders</span><h3 id="stat-total">0</h3></div>
+          <div class="stat-card"><span>Pending</span><h3 id="stat-pending">0</h3></div>
+          <div class="stat-card"><span>Dispatched</span><h3 id="stat-dispatched">0</h3></div>
+          <div class="stat-card"><span>Delivered</span><h3 id="stat-delivered">0</h3></div>
         </div>
 
-        <table class="cart-table">
-          <thead><tr><th>Order ID</th><th>Date</th><th>Status</th><th>Total</th></tr></thead>
-          <tbody>
-            <tr><td>#TRR-1042</td><td>05 Jul 2026</td><td>Dispatched</td><td>Rs. 8,500</td></tr>
-            <tr><td>#TRR-1031</td><td>22 Jun 2026</td><td>Delivered</td><td>Rs. 4,200</td></tr>
-            <tr><td>#TRR-1018</td><td>10 Jun 2026</td><td>Delivered</td><td>Rs. 12,900</td></tr>
-          </tbody>
-        </table>
+        <div id="orders-table-wrap">
+          <table class="cart-table">
+            <thead><tr><th>Order ID</th><th>Date</th><th>Status</th><th>Payment</th><th>Total</th></tr></thead>
+            <tbody id="my-orders-body"><tr><td colspan="5">Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -118,5 +119,124 @@
 <a href="https://wa.me/923400026136" target="_blank" class="wa-float">&#128172;</a>
 <script src="js/script.js"></script>
 <script src="js/store.js"></script>
+<script>
+const AUTH_API = '/api';
+function getCustomerToken() { return localStorage.getItem('tarar_customer_token'); }
+function setCustomerToken(t) { localStorage.setItem('tarar_customer_token', t); }
+function clearCustomerToken() { localStorage.removeItem('tarar_customer_token'); }
+
+function fmtPrice(n) { return 'Rs. ' + (Number(n) || 0).toLocaleString('en-PK'); }
+
+function statusLabelCustomer(s) {
+  const labels = { pending: 'Pending', accepted: 'Accepted', dispatched: 'Dispatched', delivered: 'Delivered', cancelled: 'Cancelled' };
+  return labels[s] || s;
+}
+
+async function doLogout() {
+  const token = getCustomerToken();
+  try { await fetch(AUTH_API + '/auth/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + token } }); } catch (e) {}
+  clearCustomerToken();
+  window.location.reload();
+}
+
+async function loadDashboard() {
+  const token = getCustomerToken();
+  const meRes = await fetch(AUTH_API + '/auth/me', { headers: { Authorization: 'Bearer ' + token } });
+  if (!meRes.ok) { clearCustomerToken(); return; }
+  const me = await meRes.json();
+
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('dashboard-section').style.display = 'block';
+  document.getElementById('dash-name').textContent = me.name;
+
+  const [statsRes, ordersRes] = await Promise.all([
+    fetch(AUTH_API + '/my/stats', { headers: { Authorization: 'Bearer ' + token } }),
+    fetch(AUTH_API + '/my/orders', { headers: { Authorization: 'Bearer ' + token } })
+  ]);
+  const stats = await statsRes.json();
+  const orders = await ordersRes.json();
+
+  document.getElementById('stat-total').textContent = stats.totalOrders;
+  document.getElementById('stat-pending').textContent = stats.pending;
+  document.getElementById('stat-dispatched').textContent = stats.dispatched;
+  document.getElementById('stat-delivered').textContent = stats.delivered;
+
+  const body = document.getElementById('my-orders-body');
+  if (!orders.length) {
+    body.innerHTML = '<tr><td colspan="5">No orders yet. <a href="shop.html">Start shopping</a></td></tr>';
+    return;
+  }
+  body.innerHTML = orders.map(o => `
+    <tr>
+      <td>#${o.id}</td>
+      <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+      <td>${statusLabelCustomer(o.status)}</td>
+      <td>${o.paymentMethod}</td>
+      <td>${fmtPrice(o.total)}</td>
+    </tr>
+  `).join('');
+}
+
+function showForgotPassword() {
+  fetch(AUTH_API + '/settings').then(r => r.json()).then(s => {
+    alert('To reset your password, please contact us at ' + (s.contactPhone || s.jazzCashNumber || '0340-0026136') + ' or via WhatsApp. Our team will help verify your identity and reset your password.');
+  }).catch(() => {
+    alert('Please contact our support team via WhatsApp to reset your password.');
+  });
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const identifier = document.getElementById('login-identifier').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errBox = document.getElementById('login-error');
+  errBox.style.display = 'none';
+  try {
+    const res = await fetch(AUTH_API + '/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errBox.textContent = data.error || 'Login failed'; errBox.style.display = 'block'; return; }
+    setCustomerToken(data.token);
+    loadDashboard();
+  } catch (err) {
+    errBox.textContent = 'Could not connect to server.'; errBox.style.display = 'block';
+  }
+});
+
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('reg-name').value.trim();
+  const city = document.getElementById('reg-city').value.trim();
+  const address = document.getElementById('reg-address').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const password2 = document.getElementById('reg-password2').value;
+  const errBox = document.getElementById('register-error');
+  errBox.style.display = 'none';
+
+  if (password.length < 8) { errBox.textContent = 'Password must be at least 8 characters.'; errBox.style.display = 'block'; return; }
+  if (password !== password2) { errBox.textContent = 'Passwords do not match.'; errBox.style.display = 'block'; return; }
+  if (!/^03\d{9}$/.test(phone.replace(/[\s-]/g, ''))) { errBox.textContent = 'Please enter a valid Pakistani mobile number (e.g. 03001234567).'; errBox.style.display = 'block'; return; }
+
+  try {
+    const res = await fetch(AUTH_API + '/auth/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, city, address, phone, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errBox.textContent = data.error || 'Registration failed'; errBox.style.display = 'block'; return; }
+    setCustomerToken(data.token);
+    if (typeof showToast === 'function') showToast('Account created! Welcome, ' + data.customer.name);
+    loadDashboard();
+  } catch (err) {
+    errBox.textContent = 'Could not connect to server.'; errBox.style.display = 'block';
+  }
+});
+
+if (getCustomerToken()) { loadDashboard(); }
+</script>
 </body>
 </html>
